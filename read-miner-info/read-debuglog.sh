@@ -38,7 +38,8 @@ do
     cat $i | sed 's/] /\]\n/g' | grep DNA   | sed 's/DNA\[//g'   | sed 's/\]//g' > $i.DNA
 
     # According to WU value, calculate GHSav.
-    # Formula: ghsav = WU / 60 * 2^32 /10^9
+    # Formula: ghsav = WU / 60 * 2^32 / 10^9
+    # Formula: WU = ghsav * 10^9 * 60 / 2^32 * 100
     cat $i.WU | awk '{printf ("%.2f\n", ($1/60*2^32/10^9))}' > $i.GHSav
 
     Power=CGMiner_Power.log
