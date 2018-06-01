@@ -31,7 +31,7 @@ do
 
     # CGMiner restart
     ./ssh-login.exp $IP /etc/init.d/cgminer restart
-    sleep 2400
+    sleep 30
 
     # Read AvalonMiner Power
     ./read-power.py
