@@ -55,7 +55,7 @@ calc_float2_avg() {
 
     for m in `cat $1`
     do
-	s_float2=$(echo "scale=2; ${s_float2} / $m" | bc)
+	s_float2=$(echo "scale=2; ${s_float2} + $m" | bc | awk '{printf "%.2f", $0}')
         let c_float2=c_float2+1
     done
 
@@ -69,7 +69,7 @@ calc_float3_avg() {
 
     for n in `cat $1`
     do
-	s_float3=$(echo "scale=3; ${s_float3} / $n" | bc)
+	s_float3=$(echo "scale=3; ${s_float3} + $n" | bc | awk '{printf "%.3f", $0}')
         let c_float3=c_float3+1
     done
 
@@ -82,7 +82,7 @@ do
     cat $i | sed 's/] /\]\n/g' | grep Temp  | sed 's/Temp\[//g'  | sed 's/\]//g' > $i.Temp
     cat $i | sed 's/] /\]\n/g' | grep TMax  | sed 's/TMax\[//g'  | sed 's/\]//g' > $i.TMax
     cat $i | sed 's/] /\]\n/g' | grep WU    | sed 's/WU\[//g'    | sed 's/\]//g' > $i.WU
-    cat $i | sed 's/] /\]\n/g' | grep DH    | sed 's/DH\[//g'    | sed 's/\]//g' > $i.DH
+    cat $i | sed 's/] /\]\n/g' | grep DH    | sed 's/DH\[//g'    | sed 's/\]//g' | sed 's/\%//g' > $i.DH
     cat $i | sed 's/] /\]\n/g' | grep DNA   | sed 's/DNA\[//g'   | sed 's/\]//g' > $i.DNA
 
     # According to WU value, calculate GHSav.
@@ -125,8 +125,8 @@ do
     echo "${avg_float3}" > ph-avg.log
 
     # DH average
-    calc_float2_avg $i.DH
-    echo "${avg_float2}" > dh-avg.log
+    calc_float3_avg $i.DH
+    echo "${avg_float3}" > dh-avg.log
 
     paste -d, freq.log voltage.log vcore.log $i.GHSmm $i.Temp $i.TMax $i.WU $i.GHSav $Power ph.log $i.DH $i.DNA >> ${Result#.log}.csv
     paste -d, freq.log voltage.log vcore.log ghsmm-avg.log temp-avg.log tmax-avg.log wu-avg.log ghsav-avg.log power-avg.log ph-avg.log dh-avg.log >> ${Result#.log}.csv
