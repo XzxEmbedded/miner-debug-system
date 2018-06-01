@@ -1,19 +1,21 @@
 #!/bin/bash
+#
+# Author March 2018 Zhenxing Xu <xzxlnmail@163.com>
+#
 
-IP=`cat ip-freq-voltlevel-devid.config | sed -n '2p' | awk '{ print $1 }'`
+IP=$1
+dirip="result-"$IP
 DATE=`date +%Y%m%d%H%M`
-dirname=$IP"-"$DATE"-"$2"-"$4"-"$6"-"$8
-mkdir $dirname
+dirname=$IP"-"$DATE"-"$3"-"$5"-"$7"-"$9
+mkdir -p ./$dirip/$dirname
 
+cat ./$dirip/estats.log  | grep "\[MM ID" > ./$dirip/$dirname/CGMiner_Debug.log
+cat ./$dirip/edevs.log	 | grep -v Reply  > ./$dirip/$dirname/CGMiner_Edevs.log
+cat ./$dirip/summary.log | grep -v Reply  > ./$dirip/$dirname/CGMiner_Summary.log
 
-
-cat estats.log  | grep "\[MM ID" > ./$dirname/CGMiner_Debug.log
-cat edevs.log | grep -v Reply  > ./$dirname/CGMiner_Edevs.log
-cat summary.log | grep -v Reply  > ./$dirname/CGMiner_Summary.log
-
-rm estats.log edevs.log summary.log
-mv CGMiner_Power.log ./$dirname
-cd ./$dirname
+rm ./$dirip/estats.log ./$dirip/edevs.log ./$dirip/summary.log
+mv ./$dirip/CGMiner_Power.log ./$dirip/$dirname
+cd ./$dirip/$dirname
 
 sum=0
 avg_int=0
@@ -30,8 +32,9 @@ done
 let avg=$sum/$cnt
 echo $avg > vcore.log
 
-echo "$2" > freq.log
-echo "$4" > voltage.log
+# Freq and voltage level options
+echo "$3" > freq.log
+echo "$5" > voltage.log
 
 # Calculate integer average
 calc_int_avg() {
@@ -135,7 +138,4 @@ do
 
     rm -rf $i.GHSmm $i.Temp $i.TMax $i.WU $i.GHSav $i.DH $i.DNA ph.log freq.log voltage.log vcore.log
     rm -f ghsmm-avg.log temp-avg.log tmax-avg.log wu-avg.log ghsav-avg.log power-avg.log ph-avg.log dh-avg.log
-
-    cd ..
-    mv ./$dirname ./result*
 done
