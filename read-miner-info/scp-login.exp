@@ -11,9 +11,6 @@ if { "$flag" == "0" } {
     spawn scp ./cgminer root@$ip_addr:/etc/config
 }
 
-expect "password:"
-send "1\r"
-
 expect {
     \"Permission denied, please try again.\" exit
 }

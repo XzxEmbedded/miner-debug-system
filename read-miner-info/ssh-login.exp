@@ -13,9 +13,6 @@ if { $file != "" } {
     log_file $file
 }
 
-expect "password:"
-send "1\r"
-
 expect {
     \"Permission denied, please try again.\" exit
 }
