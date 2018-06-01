@@ -65,6 +65,10 @@ def crc16_bytes(data):
     return crc
 
 if __name__ == '__main__':
+    ip = sys.argv[1]
+    dirip = "result-" + ip
+    path = "./" + dirip + "/" + "CGMiner_Power.log"
+
     '''
     Device addr; func: read:0x03, write:0x10(16);
     MODBUS protocol read/write
@@ -96,7 +100,7 @@ if __name__ == '__main__':
         logging.info("Input device ID error.")
         sys.exit(0)
 
-    power_file = open("CGMiner_Power.log", 'w+')
+    power_file = open(path, 'w+')
 
     for i in range(min_id, max_id + 1):
         data[0] = i
