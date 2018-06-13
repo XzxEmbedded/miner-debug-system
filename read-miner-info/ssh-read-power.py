@@ -23,7 +23,7 @@ def ssh_read_power(ip):
                     return None
         try:
             stdin, stdout, stderr = ssh.exec_command(
-                'python /root/read-power.py')
+                'python /usr/bin/readpower')
             time.sleep(2)
             v = stdout.read().split('\n')[0]
         except:
