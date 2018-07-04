@@ -77,7 +77,7 @@ if [ -z "${more_options_flag}" ]; then
     # SSH no password
     ./ssh-login.exp ${C_IP} cgminer-api estats estats.log > /dev/null
     debug=`cat estats.log | grep PVT`
-    if [ -z ${debug} ]; then
+    if [ -z "${debug}" ]; then
         ./ssh-login.exp ${C_IP} cgminer-api "debug\|D" > /dev/null
         sleep 1
         rm estats.log
