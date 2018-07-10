@@ -16,7 +16,7 @@ rm ./$dirip/estats.log
 cd ./$dirip/$dirname
 
 # Freq and voltage level options
-vol_cnt=`cat CGMiner_Debug.log | grep "\,MM ID"`
+vol_cnt=`cat CGMiner_Debug.log | grep "\[MM ID" | wc -l`
 for i in `seq 1 $vol_cnt`
 do
     echo "$3" >> voltage.log

@@ -39,17 +39,20 @@ do
     # CGMiner restart
     ./ssh-login.exp $CIP /etc/init.d/cgminer restart
 
-    for i in `seq 1 2`
+    for i in `seq 1 12`
     do
         sleep $time
 
         # Read AvalonMiner Power
-        #./ssh-power.py $PIP
+        ./ssh-power.py $PIP
         sleep 1
 
         # Copy remote power file
         ./scp-login.exp $PIP $dirip 2 > /dev/null
         sleep 3
+
+        # Convert raw to column display
+        ./raw-to-col.sh $CIP $dirip CGMiner_Power.log
 
         ./ssh-login.exp $CIP cgminer-api estats ./$dirip/estats.log > /dev/null
         sleep 1
