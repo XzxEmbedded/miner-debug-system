@@ -10,11 +10,11 @@ set dir [lindex $argv 1]
 set flag [lindex $argv 2]
 
 if { "$flag" == "0" } {
-    spawn scp root@$ip_addr:/etc/config/cgminer ./$dir
+    spawn scp  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$ip_addr:/etc/config/cgminer ./$dir
 } elseif { "$flag" == "1" }  {
-    spawn scp ./$dir/cgminer root@$ip_addr:/etc/config
+    spawn scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ./$dir/cgminer root@$ip_addr:/etc/config
 } elseif { "$flag" == "2" } {
-    spawn scp root@$ip_addr:/root/CGMiner_Power.log ./$dir
+    spawn scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$ip_addr:/root/hasher.bit ./$dir
 } else {
     exit
 }

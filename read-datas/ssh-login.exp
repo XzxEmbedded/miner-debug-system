@@ -10,7 +10,7 @@ set cmd [lindex $argv 1]
 set opt [lindex $argv 2]
 set file [lindex $argv 3]
 
-spawn ssh -n root@$ip_addr $cmd $opt
+spawn ssh -n root@$ip_addr -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $cmd $opt
 
 if { $file != "" } {
     log_file $file
