@@ -104,11 +104,13 @@ if __name__ == '__main__':
             if (power_data > -1):
                 break
 
-        if (power_data < 30):
+        if ((power_data < 300) or (power_data > 3000)):
             del data[6:8]
             continue
 
-        print('Device ID:%d, Power value:%d' % (i, power_data))
+        logging.debug('Device ID:%d, Power value:%d', i, power_data)
+
+        print('Power value:%d' % (power_data))
         power_file.write(str(power_data))
         power_file.write('\n')
         del data[6:8]
