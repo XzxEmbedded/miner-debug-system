@@ -10,7 +10,6 @@ import time
 import paramiko
 
 def ssh_read_power(ip):
-    passwd = '1'
     v = None
     retry = 3
     for i in range(0, retry):
@@ -18,7 +17,7 @@ def ssh_read_power(ip):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         for k in range(0, retry):
             try:
-                ssh.connect(ip, 22, 'root', passwd)
+                ssh.connect(ip, 22, 'root')
                 break
             except:
                 ssh.close()
