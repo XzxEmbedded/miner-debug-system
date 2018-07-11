@@ -48,9 +48,13 @@ do
     ./scp-login.exp $PIP $dirip 2 > /dev/null
     sleep 3
 
-    # SSH no password
-    ./ssh-login.exp $CIP cgminer-api "debug\|D" > /dev/null
+    # Debuglog switch
+    dbg=`./ssh-login.exp $CIP cgminer-api debug | grep "\[Debug\] => true" | wc -l`
+    if [ $dbg -eq 0 ]; then
+        ./ssh-login.exp $CIP cgminer-api "debug\|D" > /dev/null
+    fi
     sleep 1
+
     ./ssh-login.exp $CIP cgminer-api estats ./$dirip/estats.log > /dev/null
     ./ssh-login.exp $CIP cgminer-api edevs ./$dirip/edevs.log > /dev/null
     ./ssh-login.exp $CIP cgminer-api summary ./$dirip/summary.log > /dev/null
@@ -73,17 +77,14 @@ if [ -z "${more_options_flag}" ]; then
     ./scp-login.exp $PIP $dirip 2 > /dev/null
     sleep 3
 
-    # SSH no password
-    ./ssh-login.exp $CIP cgminer-api estats ./$dirip/estats.log > /dev/null
-    debug=`cat ./$dirip/estats.log | grep PVT`
-    if [ -z $debug ]; then
+    # Debuglog switch
+    dbg=`./ssh-login.exp $CIP cgminer-api debug | grep "\[Debug\] => true" | wc -l`
+    if [ $dbg -eq 0 ]; then
         ./ssh-login.exp $CIP cgminer-api "debug\|D" > /dev/null
-        sleep 1
-        rm ./$dirip/estats.log
-        ./ssh-login.exp $CIP cgminer-api estats ./$dirip/estats.log > /dev/null
     fi
-
     sleep 1
+
+    ./ssh-login.exp $CIP cgminer-api estats ./$dirip/estats.log > /dev/null
     ./ssh-login.exp $CIP cgminer-api edevs ./$dirip/edevs.log > /dev/null
     ./ssh-login.exp $CIP cgminer-api summary ./$dirip/summary.log > /dev/null
 
