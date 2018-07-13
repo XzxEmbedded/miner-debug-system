@@ -13,8 +13,6 @@ if { "$flag" == "0" } {
     spawn scp  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$ip_addr:/etc/config/cgminer ./$dir
 } elseif { "$flag" == "1" }  {
     spawn scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ./$dir/cgminer root@$ip_addr:/etc/config
-} elseif { "$flag" == "2" } {
-    spawn scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$ip_addr:/root/hasher.bit ./$dir
 } else {
     exit
 }
