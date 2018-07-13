@@ -14,16 +14,16 @@ do
     fi
     ./mdssub.sh $time $tmp &
     sleep 5
+done
 
-    while true
-    do
-        cnt=`ps -ef | grep mdssub | wc -l`
-        if [ $cnt -le '2' ]; then
-            echo -e "\033[1;32m++++++++++++++++++++++++++++++  Done   ++++++++++++++++++++++++++++++\033[0m"
-            break
-        fi
+while true
+do
+    cnt=`ps -ef | grep mdssub | wc -l`
+    if [ $cnt -le '2' ]; then
+        echo -e "\033[1;32m++++++++++++++++++++++++++++++  Done   ++++++++++++++++++++++++++++++\033[0m"
+        break
+    fi
 
-        sleep 5
-        echo "++++++++++++++++++++++++++++++ Running ++++++++++++++++++++++++++++++"
-    done
+    sleep 5
+    echo "++++++++++++++++++++++++++++++ Running ++++++++++++++++++++++++++++++"
 done

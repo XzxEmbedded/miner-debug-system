@@ -5,7 +5,7 @@
 
 IP=$1
 dirip="result-"$IP
-DATE=`date +%Y%m%d%H%M`
+DATE=`date +%Y%m%d%H%M%S`
 dirname=$IP"-"$DATE"-"$3
 mkdir -p ./$dirip/$dirname
 
