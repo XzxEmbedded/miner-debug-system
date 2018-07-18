@@ -16,6 +16,10 @@ mkdir $dirip
 
 # Copy CGMiner configuration file
 ./scp-login.exp $CIP $dirip 0
+if [ $? -ne '0' ]; then
+    rm -fr $dirip
+    exit
+fi
 sleep 3
 
 # Create result.csv
