@@ -70,11 +70,7 @@ if [ -z "${more_options_flag}" ]; then
     tmp=`echo ${more_options#*more_options} | sed "s/'//g"`
 
     # Read AvalonMiner Power
-    ./ssh-power.py $PIP
-    sleep 1
-
-    # Copy remote power file
-    ./scp-login.exp $PIP $dirip 2 > /dev/null
+    ./ssh-power.py $PIP | sed '/^$/d' | cut -d \: -f 2 > ./$dirip/CGMiner_Power.log
     sleep 3
 
     # Debuglog switch
