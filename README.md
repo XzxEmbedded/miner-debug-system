@@ -1,8 +1,8 @@
-Miner-Automate-Test-Scripts
+# Miner-Automate-Test-Scripts
 
-Usage:
+## Usage:
 
-	Set DDS238-2 ZN/S Power instrument ID value:
+	(1) Set DDS238-2 ZN/S Power instrument ID value:
 	cd ./set-dev-id/python2/3
 
 	sudo ./set-device-id.py
@@ -10,11 +10,16 @@ Usage:
 	Prompting input setting new device id value: 1 ~ 247
 	After running finish it will prompt done.
 
-	Read Miner Power value and Miner debuglog messages:
+	(2) Read Miner Power value and Miner debuglog messages:
 	cd ./read-datas
 
-	vim miner-options.conf
-	Setting options
+	(3) Modify miner-options.conf setting options
+	TIME option: running time for different options
+	C_IP: cgminer rpi ip address
+	P_IP: power rpi ip address
+	More Options: cgminer configuration options
 
+	(4) Statistical datas
 	./mds.sh
+
 	After done it will generate cvs files and log files.
