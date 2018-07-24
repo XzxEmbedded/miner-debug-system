@@ -46,6 +46,12 @@ do
 
     # Read AvalonMiner Power
     ./ssh-power.py $PIP | sed '/^$/d' | cut -d \: -f 2 > ./$dirip/CGMiner_Power.log
+    for i in `cat ./$dirip/CGMiner_Power.log`
+    do
+        if [ $i -ge 300 -a $i -le 3000 ]; then
+            echo $i > ./$dirip/CGMiner_Power.log
+        fi
+    done
     sleep 3
 
     # Debuglog switch
