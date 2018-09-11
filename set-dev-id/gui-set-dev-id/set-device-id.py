@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding:utf-8 -*-
 #
 # Author Feb 2018 xuzhenxing <xuzhenxing@canaan-creative.com>
