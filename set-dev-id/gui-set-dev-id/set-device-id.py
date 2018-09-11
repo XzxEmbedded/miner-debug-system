@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
-# coding: utf-8
+# -*- coding:utf-8 -*-
 #
 # Author Feb 2018 xuzhenxing <xuzhenxing@canaan-creative.com>
 #
-
+# RS485 MODBUS Protocol:
+# Device addr; func: read:0x03, write:0x10(16);
+# MODBUS protocol read/write
+# If write func is wrong, return 0xff
+# CRCMODBUS protocol write:
+# device-id, func, start-reg-hi, start-reg-lo, data-reg-hi, data-reg-lo, bytecount, value-hi, value-lo, crc-lo, crc-hi
+#
 
 import serial
 import logging
 import sys
-from tkinter import *
 import easygui
 
 logging.basicConfig(level=logging.INFO)
@@ -59,17 +64,13 @@ def crc16_bytes(data):
     return crc
 
 
-def set_id(current_id, set_id):
-    '''
-    Device addr; func: read:0x03, write:0x10(16);
-    MODBUS protocol read/write
-    If write func is wrong, return 0xff
-    CRCMODBUS protocol write:
-    device-id, func, start-reg-hi, start-reg-lo, data-reg-hi, data-reg-lo, bytecount, value-hi, value-lo, crc-lo, crc-hi
-    '''
+def set_id(usb_port, current_id, set_id):
+    ''' Setting Device id '''
+
+    global COM_Port
 
     # Opening the serial port
-    COM_PortName = "/dev/ttyUSB0"
+    COM_PortName = usb_port
     COM_Port = serial.Serial(COM_PortName, timeout=3)  # Open the COM port
     logging.debug('Com Port: %s, %s', COM_PortName, 'Opened')
 
@@ -82,7 +83,8 @@ def set_id(current_id, set_id):
     data = [0x00, 0x10, 0x00, 0x15, 0x00, 0x01, 0x02, 0x00, 0x03]
 
     # Current device id value
-    if (set_id >= 1) and (set_id <= 247):
+    current_id = int(current_id)
+    if (current_id >= 1) and (current_id <= 256):
         data[0] = current_id
         print("Please input current device ID: %d" % data[0])
     else:
@@ -91,7 +93,8 @@ def set_id(current_id, set_id):
         sys.exit()
 
     # Setting device id value
-    if (set_id >= 1) and (set_id <= 247):
+    set_id = int(set_id)
+    if (set_id >= 1) and (set_id <= 256):
         data[7] = set_id
         print("Please input setting device ID: %d" % data[7])
     else:
@@ -117,37 +120,18 @@ def set_id(current_id, set_id):
 
 
 def setup():
-    ''' Tools for setting power device id '''
 
-    root = Tk()
-    root.title('Tools for setting power device id')
-    root.geometry('850x300')
+    title = "设置功率器设备ID工具"
+    names = ['串口: ', '当前设备ID值: ', '设置设备ID值: ']
+    fields = []
 
-    for i in range(5):
-        Label(root, text='').grid(row=i)
+    while True:
+        fields = easygui.multenterbox('', title, names, fields)
+        if (fields[0] == '') or (fields[1] == '') or (fields[2] == ''):
+            continue
+        break
 
-    Label(root, text='\t\t\t当前设备ID值: ').grid(row=6, column=1)
-    Label(root, text='\t\t\t设置设备ID值: ').grid(row=7, column=1)
-    Label(root, text='').grid(row=8)
-
-    current = StringVar()
-    setting = StringVar()
-    current_value = Entry(root, textvariable=current)
-    setting_value = Entry(root, textvariable=setting)
-    current_value.grid(row=6, column=2, padx=10, pady=5)
-    setting_value.grid(row=7, column=2, padx=30, pady=5)
-
-    def run():
-        set_id(current_value.get(), setting_value.get())
-        easygui.msgbox('\n\n\n\n\t\t\t\tSetting Success!', title='Tools for setting power device id')
-
-    Button(root, text='Enter', width=10, command=run).grid(row=9, \
-            column=3, sticky=W, padx=10, pady=5)
-    Button(root, text='Quit', width=10, command=root.quit).grid(row=9, \
-            column=4, sticky=E, padx=10, pady=5)
-
-    root.mainloop()
-
+    set_id(fields[0], fields[1], fields[2])
 
 if __name__ == '__main__':
     setup()
