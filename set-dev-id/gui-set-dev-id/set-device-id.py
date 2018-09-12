@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding:utf-8 -*-
 #
 # Author Feb 2018 xuzhenxing <xuzhenxing@canaan-creative.com>
@@ -10,6 +9,7 @@
 # CRCMODBUS protocol write:
 # device-id, func, start-reg-hi, start-reg-lo, data-reg-hi, data-reg-lo, bytecount, value-hi, value-lo, crc-lo, crc-hi
 #
+
 
 import serial
 import logging
@@ -28,7 +28,7 @@ def rs485_read():
         for i in range(8):
             rx_data = COM_Port.read()
             read_data.append(hex(ord(rx_data)))
-        logging.info('Read Bytes: %s', read_data)
+        logging.debug('Read Bytes: %s', read_data)
     except:
         return False
 
@@ -86,21 +86,21 @@ def set_id(usb_port, current_id, set_id):
     current_id = int(current_id)
     if (current_id >= 1) and (current_id <= 256):
         data[0] = current_id
-        print("Please input current device ID: %d" % data[0])
+        logging.debug("Current device ID is %d" % data[0])
     else:
         logging.info("Current Device ID is invaild.")
         COM_Port.close()
-        sys.exit()
+        return False
 
     # Setting device id value
     set_id = int(set_id)
     if (set_id >= 1) and (set_id <= 256):
         data[7] = set_id
-        print("Please input setting device ID: %d" % data[7])
+        logging.debug("Setting New Device ID is %d" % data[7])
     else:
         logging.info("Setting Device ID is invaild.")
         COM_Port.close()
-        sys.exit()
+        return False
 
     crc = crc16_bytes(data)
     low = int(crc & 0xff)
@@ -111,15 +111,16 @@ def set_id(usb_port, current_id, set_id):
 
     rs485_write(data)
     if not rs485_read():
-        print("Setting device id failed.")
+        logging.info("Setting device id failed.")
         COM_Port.close()
-        sys.exit()
+        return False
 
-    logging.info("Setting Device ID success, new device ID is %d", data[7])
     COM_Port.close()
+    return True
 
 
 def setup():
+    ''' Setup GUI '''
 
     title = "设置功率器设备ID工具"
     names = ['串口: ', '当前设备ID值: ', '设置设备ID值: ']
@@ -127,11 +128,21 @@ def setup():
 
     while True:
         fields = easygui.multenterbox('', title, names, fields)
-        if (fields[0] == '') or (fields[1] == '') or (fields[2] == ''):
-            continue
+        if fields == None:
+            return False
+
         break
 
-    set_id(fields[0], fields[1], fields[2])
+    if (set_id(fields[0], fields[1], fields[2])):
+        easygui.msgbox("\n\n\n\n\t\t设置新设备ID成功，为确保无误, 请检测一下功率器是否设置成功。", \
+                title="设置功率器设备ID工具")
+    else:
+        easygui.msgbox("\n\n\n\n\t\t\t设置新设备ID失败，请重新设置设备ID。", \
+                title="设置功率器设备ID工具")
+
+    return True
 
 if __name__ == '__main__':
-    setup()
+    while True:
+        if not setup():
+            sys.exit()
