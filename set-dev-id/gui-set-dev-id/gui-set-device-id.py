@@ -131,14 +131,12 @@ def setup():
         if fields == None:
             return False
 
-        break
-
-    if (set_id(fields[0], fields[1], fields[2])):
-        easygui.msgbox("\n\n\n\n\t\t设置新设备ID成功，为确保无误, 请检测一下功率器是否设置成功。", \
-                title="设置功率器设备ID工具")
-    else:
-        easygui.msgbox("\n\n\n\n\t\t\t设置新设备ID失败，请重新设置设备ID。", \
-                title="设置功率器设备ID工具")
+        if (set_id(fields[0], fields[1], fields[2])):
+            easygui.msgbox("\n\n\n\n\t\t设置新设备ID成功，为确保无误, 请检测一下功率器是否设置成功。", \
+                    title="设置功率器设备ID工具")
+        else:
+            easygui.msgbox("\n\n\n\n\t\t\t设置新设备ID失败，请重新设置设备ID。", \
+                    title="设置功率器设备ID工具")
 
     return True
 
