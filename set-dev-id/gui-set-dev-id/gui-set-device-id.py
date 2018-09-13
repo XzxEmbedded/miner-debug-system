@@ -131,7 +131,7 @@ def setup():
             index = index + 1
             # Check range for 0 - 100
             if index > 100:
-                print(index)
+                print("Do not check COM")
                 return False
             continue
 
