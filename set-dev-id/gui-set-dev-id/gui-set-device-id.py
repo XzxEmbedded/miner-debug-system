@@ -64,20 +64,8 @@ def crc16_bytes(data):
     return crc
 
 
-def set_id(usb_port, current_id, set_id):
+def set_id(current_id, set_id):
     ''' Setting Device id '''
-
-    global COM_Port
-
-    # Opening the serial port
-    COM_PortName = usb_port
-    COM_Port = serial.Serial(COM_PortName, timeout=3)  # Open the COM port
-    logging.debug('Com Port: %s, %s', COM_PortName, 'Opened')
-
-    COM_Port.baudrate = 2400                # Set Baud rate
-    COM_Port.bytesize = 8                   # Number of data bits = 8
-    COM_Port.parity   = 'N'                 # No parity
-    COM_Port.stopbits = 1                   # Number of Stop bits = 1
 
     # Init data
     data = [0x00, 0x10, 0x00, 0x15, 0x00, 0x01, 0x02, 0x00, 0x03]
@@ -89,7 +77,6 @@ def set_id(usb_port, current_id, set_id):
         logging.debug("Current device ID is %d" % data[0])
     else:
         logging.info("Current Device ID is invaild.")
-        COM_Port.close()
         return False
 
     # Setting device id value
@@ -99,7 +86,6 @@ def set_id(usb_port, current_id, set_id):
         logging.debug("Setting New Device ID is %d" % data[7])
     else:
         logging.info("Setting Device ID is invaild.")
-        COM_Port.close()
         return False
 
     crc = crc16_bytes(data)
@@ -112,32 +98,63 @@ def set_id(usb_port, current_id, set_id):
     rs485_write(data)
     if not rs485_read():
         logging.info("Setting device id failed.")
-        COM_Port.close()
         return False
 
-    COM_Port.close()
     return True
 
 
 def setup():
     ''' Setup GUI '''
 
+    global COM_Port
+
+    # Check Serial inferface
+    port_prefix = 'COM'
+    index = 0
+
+    while True:
+        try:
+            usb_port = port_prefix + str(index)
+
+            # Opening the serial port
+            COM_PortName = usb_port
+            COM_Port = serial.Serial(COM_PortName, timeout=3)  # Open the COM port
+            logging.debug('Com Port: %s, %s', COM_PortName, 'Opened')
+
+            COM_Port.baudrate = 2400                # Set Baud rate
+            COM_Port.bytesize = 8                   # Number of data bits = 8
+            COM_Port.parity   = 'N'                 # No parity
+            COM_Port.stopbits = 1                   # Number of Stop bits = 1
+
+            break
+        except:
+            index = index + 1
+            # Check range for 0 - 100
+            if index > 100:
+                print(index)
+                return False
+            continue
+
+
     title = "设置功率器设备ID工具"
     names = ['串口: ', '当前设备ID值: ', '设置设备ID值: ']
     fields = []
+    fields.append(usb_port)
 
     while True:
         fields = easygui.multenterbox('', title, names, fields)
         if fields == None:
+            COM_Port.close()
             return False
 
-        if (set_id(fields[0], fields[1], fields[2])):
+        if (set_id(fields[1], fields[2])):
             easygui.msgbox("\n\n\n\n\t\t设置新设备ID成功，为确保无误, 请检测一下功率器是否设置成功。", \
                     title="设置功率器设备ID工具")
         else:
             easygui.msgbox("\n\n\n\n\t\t\t设置新设备ID失败，请重新设置设备ID。", \
                     title="设置功率器设备ID工具")
 
+    COM_Port.close()
     return True
 
 if __name__ == '__main__':
